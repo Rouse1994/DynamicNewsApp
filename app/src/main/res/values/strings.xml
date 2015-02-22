@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Dynamic News</string>
+
+    //News Categories
+    <string name="Popular">Popular</string>
+    <string name="Local">Local</string>
+    <string name="US">U.S. News</string>
+    <string name="World">World News</string>
+    <string name="Sports">Sports</string>
+    <string name="Finance">Finance</string>
+    <string name="Pop">Pop Culture</string>
+
+    //Other menu items
+    <string name="Saved">Saved</string>
+    <string name="Later">Read Later</string>
+    <string name="Shared">Shared with Me</string>
+    <string name="Settings">Settings</string>
+    <string name="Notifications">Notifications</string>
+    <string name="Edit">Edit Categories</string>
+    <string name="Location">Location</string>
+    <string name="Friends">Friends</string>
+    <string name="Feedback">Submit Feedback</string>
+    <string name="LogOut">Log Out</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+</resources>

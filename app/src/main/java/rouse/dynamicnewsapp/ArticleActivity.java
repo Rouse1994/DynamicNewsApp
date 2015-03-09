@@ -1,39 +1,41 @@
 package rouse.dynamicnewsapp;
 
 import android.app.Activity;
-import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.Color;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
 
-public class MainActivity extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, AdapterView.OnItemClickListener {
-    private class FetchArticles extends AsyncTask<String, Void, ArrayList<String>> {
+public class ArticleActivity extends ActionBarActivity
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+    private class FetchContent extends AsyncTask<String, Void, String> {
 
-        protected ArrayList<String> doInBackground(String... parms) {
-
+        protected String doInBackground(String... parms) {
+            Article article = new Article(parms[0]);
+            String articleText = article.getContent();
             // parms[0] is first parm, etc.
-            current = new NewsCategory(mTitle.toString());
-            ArrayList<String> articles = current.getTitles();
-            return articles;
+            //NewsCategory current = new NewsCategory(mTitle.toString());
+            //ArrayList<String> articles = current.getTitles();
+            //articles.add(parms[0]);
+            return articleText;
         }
 
         // Not sure what the three dots mean? See: http://stackoverflow.com/questions/3158730/java-3-dots-in-parameters?rq=1
@@ -41,23 +43,10 @@ public class MainActivity extends ActionBarActivity
 
         }
 
-        protected void onPostExecute(ArrayList<String> articles) {
-            ListView listView = (ListView)findViewById(R.id.Items);
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1 , articles);
-            listView.setAdapter(adapter);
+        protected void onPostExecute(String articleText) {
+            TextView myAwesomeTextView = (TextView)findViewById(R.id.textView);
+            myAwesomeTextView.setText(articleText);
         }
-    }
-
-    // This is for selecting an item from the list
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        // Use a toast message to show which item selected
-        String text = "Opening article...";
-        Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
-        toast.show();
-        Intent i = new Intent(getApplicationContext(), ArticleActivity.class);
-        i.putExtra("content",current.getArticleFileName(position));
-        startActivity(i);
     }
 
     /**
@@ -68,7 +57,7 @@ public class MainActivity extends ActionBarActivity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
-    NewsCategory current = new NewsCategory();
+
     MenuItem itemLater;
     MenuItem itemSave;
     MenuItem itemShare;
@@ -83,7 +72,12 @@ public class MainActivity extends ActionBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_article);
+        String value = new String();
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            value = extras.getString("content");
+        }
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -94,9 +88,7 @@ public class MainActivity extends ActionBarActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-        ListView listView = (ListView)this.findViewById(R.id.Items);
-        listView.setOnItemClickListener(this);
-        new FetchArticles().execute("You can pass values such as category to async task");
+        new FetchContent().execute(value);
     }
 
     @Override
@@ -262,7 +254,7 @@ public class MainActivity extends ActionBarActivity
         @Override
         public void onAttach(Activity activity) {
             super.onAttach(activity);
-            ((MainActivity) activity).onSectionAttached(
+            ((ArticleActivity) activity).onSectionAttached(
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
     }

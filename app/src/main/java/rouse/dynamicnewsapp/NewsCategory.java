@@ -16,11 +16,19 @@ public class NewsCategory {
     private String tempDate;
     private String tempFileName;
 
+    public NewsCategory(){
+        //default
+    }
+
     public NewsCategory(String n_category){
         category = n_category;
         articles = new ArrayList<Article>();
         content = new String();
         getArticles();
+    }
+
+    public String getArticleFileName(int index){
+        return articles.get(index).getFileName();
     }
 
     public ArrayList<String> getTitles(){

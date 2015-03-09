@@ -16,10 +16,14 @@ public class Article {
         fileName = n_fileName;
         date = n_date;
         title = n_title;
+        content = new String();
+    }
+
+    public Article(String n_fileName){
+        fileName = n_fileName;
     }
 
     public String getContent(){
-        if ((content.equals("")) || (content.equals(null))) {
             try {
                 URL url = new URL("http://kc-sce-netrx5.umkc.edu:1214/AndroidServer/rest/news/article/?articleName="+fileName);
 
@@ -42,10 +46,10 @@ public class Article {
             } catch (Exception e) {
                 System.out.println(e);
             }
-        }
         return content;
     }
 
     public String getTitle() {return title;}
     public String getDate() {return date;}
+    public String getFileName() {return fileName;}
 }

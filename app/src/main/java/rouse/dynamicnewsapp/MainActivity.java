@@ -13,26 +13,26 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.Color;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 
 public class MainActivity extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, AdapterView.OnItemClickListener {
     private class FetchArticles extends AsyncTask<String, Void, ArrayList<String>> {
 
         protected ArrayList<String> doInBackground(String... parms) {
 
             // parms[0] is first parm, etc.
-           Article service = new Article();
-            //ArrayList<String> businesses = service.getListOfBusinesses();
-            ArrayList<String> businesses = service.getListOfArticlesJSON();
-
-            return businesses;
+            NewsCategory current = new NewsCategory(mTitle.toString());
+            ArrayList<String> articles = current.getTitles();
+            return articles;
         }
 
         // Not sure what the three dots mean? See: http://stackoverflow.com/questions/3158730/java-3-dots-in-parameters?rq=1
@@ -40,12 +40,22 @@ public class MainActivity extends ActionBarActivity
 
         }
 
-        protected void onPostExecute(ArrayList<String> businesses) {
+        protected void onPostExecute(ArrayList<String> articles) {
             ListView listView = (ListView)findViewById(R.id.Items);
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1 , businesses);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1 , articles);
             listView.setAdapter(adapter);
         }
     }
+
+    // This is for selecting an item from the list
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        // Use a toast message to show which item selected
+        String text = "You selected item " + position;
+        Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -81,6 +91,7 @@ public class MainActivity extends ActionBarActivity
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
         ListView listView = (ListView)this.findViewById(R.id.Items);
+        listView.setOnItemClickListener(this);
         new FetchArticles().execute("You can pass values such as category to async task");
     }
 

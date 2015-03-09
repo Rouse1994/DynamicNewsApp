@@ -74,14 +74,16 @@ public class ArticleActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article);
         String value = new String();
+        String title = new String();
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             value = extras.getString("content");
+            title = extras.getString("title");
         }
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
-                mTitle = getTitle();
+                mTitle = title;
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(

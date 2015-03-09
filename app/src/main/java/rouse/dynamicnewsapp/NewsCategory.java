@@ -30,6 +30,9 @@ public class NewsCategory {
     public String getArticleFileName(int index){
         return articles.get(index).getFileName();
     }
+    public String getArticleTitle(int index){
+        return articles.get(index).getTitle();
+    }
 
     public ArrayList<String> getTitles(){
         ArrayList<String> articleTitles = new ArrayList<String>();

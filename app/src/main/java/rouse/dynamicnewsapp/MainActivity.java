@@ -56,6 +56,7 @@ public class MainActivity extends ActionBarActivity
         Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
         toast.show();
         Intent i = new Intent(getApplicationContext(), ArticleActivity.class);
+        i.putExtra("title", current.getArticleTitle(position));
         i.putExtra("content",current.getArticleFileName(position));
         startActivity(i);
     }
@@ -160,17 +161,17 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        itemLater = menu.add(Menu.NONE, LATER, Menu.NONE, "");
-        itemSave = menu.add(Menu.NONE, SAVE, Menu.NONE, "");
-        itemShare = menu.add(Menu.NONE, SHARE, Menu.NONE, "");
+        //itemLater = menu.add(Menu.NONE, LATER, Menu.NONE, "");
+        //itemSave = menu.add(Menu.NONE, SAVE, Menu.NONE, "");
+        //itemShare = menu.add(Menu.NONE, SHARE, Menu.NONE, "");
 
-        itemLater.setIcon(R.drawable.later);
-        itemSave.setIcon(R.drawable.star);
-        itemShare.setIcon(R.drawable.share);
+        //itemLater.setIcon(R.drawable.later);
+        //itemSave.setIcon(R.drawable.star);
+        //itemShare.setIcon(R.drawable.share);
 
-        itemLater.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        itemSave.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        itemShare.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        //itemLater.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        //itemSave.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        //itemShare.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
         if (!mNavigationDrawerFragment.isDrawerOpen()) {
             // Only show items in the action bar relevant to this screen
@@ -189,40 +190,6 @@ public class MainActivity extends ActionBarActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        switch (item.getItemId()) {
-            case (LATER): {
-                if (Later) {
-                    //Already in Read for Later
-                    itemLater.setIcon(R.drawable.later);
-                    Later = false;
-                }
-                else{
-                    //Read for Later
-                    itemLater.setIcon(R.drawable.later_sel);
-                    Later = true;
-                }
-                break;
-            }
-            case (SAVE): {
-                if (Saved){
-                    //Already Saved
-                    itemSave.setIcon(R.drawable.star);
-                    Saved = false;
-                }
-                else {
-                    //Save it
-                    itemSave.setIcon(R.drawable.star_sel);
-                    Saved = true;
-                }
-                break;
-            }
-            case (SHARE): {
-                break;
-            }
-        }
 
         return super.onOptionsItemSelected(item);
     }

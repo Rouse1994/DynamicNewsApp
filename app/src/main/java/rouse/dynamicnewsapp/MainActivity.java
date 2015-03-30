@@ -84,6 +84,7 @@ public class MainActivity extends ActionBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -94,10 +95,11 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+        
+        new FetchArticles().execute();
 
         ListView listView = (ListView)this.findViewById(R.id.Items);
         listView.setOnItemClickListener(this);
-        new FetchArticles().execute("You can pass values such as category to async task");
     }
 
     @Override

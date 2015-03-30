@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 public class NewsCategory {
     private String category;
-    private String content; //will contain the raw text value from the server
     private ArrayList<Article> articles;
 
     private String tempTitle;
@@ -23,7 +22,6 @@ public class NewsCategory {
     public NewsCategory(String n_category){
         category = n_category;
         articles = new ArrayList<Article>();
-        content = new String();
         getArticles();
     }
 
@@ -44,35 +42,6 @@ public class NewsCategory {
     }
 
     public void getArticles(){
-            try {
-                URL url = new URL("http://kc-sce-netrx5.umkc.edu:1214/AndroidServer/rest/news/"+category);
-
-                URLConnection urlConn = url.openConnection();
-                InputStream inputStream = urlConn.getInputStream();
-                BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
-                String line = in.readLine();
-
-                String output = new String();
-
-                while (line != null) {
-                    output += line;
-                    output += "\n";
-                    tempTitle = line;
-                    line = in.readLine();
-                    tempDate = line;
-                    line = in.readLine();
-                    tempFileName = line;
-
-                    Article n_article = new Article(tempFileName, tempDate, tempTitle);
-                    articles.add(n_article);
-
-                    line = in.readLine();
-                }
-
-                in.close();
-                content = output;
-            } catch (Exception e) {
-                //do nothing
-            }
+        articles = ArticleDatabase.getAllArticles(category);
     }
 }

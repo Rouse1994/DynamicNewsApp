@@ -1,0 +1,23 @@
+private class FetchArticles extends AsyncTask<String, Void, ArrayList<String>> {
+
+        protected ArrayList<String> doInBackground(String... parms) {
+
+            // parms[0] is first parm, etc.
+           Article service = new Article();
+            //ArrayList<String> businesses = service.getListOfBusinesses();
+            ArrayList<String> businesses = service.getListOfArticlesJSON();
+
+            return businesses;
+        }
+
+        // Not sure what the three dots mean? See: http://stackoverflow.com/questions/3158730/java-3-dots-in-parameters?rq=1
+        protected void onProgressUpdate(Void... values) {
+
+        }
+
+        protected void onPostExecute(ArrayList<String> businesses) {
+            ListView listView = (ListView)findViewById(R.id.Items);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1 , businesses);
+            listView.setAdapter(adapter);
+        }
+    }

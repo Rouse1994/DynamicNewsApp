@@ -24,29 +24,7 @@ public class Article {
     }
 
     public String getContent(){
-            try {
-                URL url = new URL("http://kc-sce-netrx5.umkc.edu:1214/AndroidServer/rest/news/article/?articleName="+fileName);
-
-                URLConnection urlConn = url.openConnection();
-                InputStream inputStream = urlConn.getInputStream();
-                BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
-                String line = in.readLine();
-
-                String output = new String();
-
-                while (line != null) {
-                    output += line;
-                    output += "\n";
-                    line = in.readLine();
-                }
-
-                in.close();
-                content = output;
-                return content;
-            } catch (Exception e) {
-                System.out.println(e);
-            }
-        return content;
+        return ArticleDatabase.getArticle(fileName);
     }
 
     public String getTitle() {return title;}

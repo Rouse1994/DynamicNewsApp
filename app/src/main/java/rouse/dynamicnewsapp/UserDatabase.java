@@ -13,13 +13,22 @@ import java.util.ArrayList;
  */
 public abstract class UserDatabase {
 
+    public static int loginAttempts = 0;
 
     public static String ValidLogIn(User n_user) throws IOException{
         try {
+
+            loginAttempts++;
+
+            assert (loginAttempts < 5) : "Too many incorrect login attempts..";
+
             URL url = new URL("http://kc-sce-netrx5.umkc.edu:1214/AndroidServer/rest/news/login?username="
                                + n_user.getUsername() + "&password=" + n_user.getPassword());
 
             URLConnection urlConn = url.openConnection();
+
+            assert (urlConn!=null) : "Unable to reach network - please check VPN status and network connection.";
+
             InputStream inputStream = urlConn.getInputStream();
             BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
             String line = in.readLine();
@@ -50,6 +59,9 @@ public abstract class UserDatabase {
                     + n_user.getUsername() + "&password=" + n_user.getPassword());
 
             URLConnection urlConn = url.openConnection();
+
+            assert (urlConn!=null) : "Unable to reach network - please check VPN status and network connection.";
+
             InputStream inputStream = urlConn.getInputStream();
             BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
             String line = in.readLine();
@@ -78,6 +90,9 @@ public abstract class UserDatabase {
                     + username + "&articleName=" + articleName);
 
             URLConnection urlConn = url.openConnection();
+
+            assert (urlConn!=null) : "Unable to reach network - please check VPN status and network connection.";
+
             InputStream inputStream = urlConn.getInputStream();
             BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
             String line = in.readLine();
@@ -103,6 +118,9 @@ public abstract class UserDatabase {
                     + username + "&articleName=" + articleName);
 
             URLConnection urlConn = url.openConnection();
+
+            assert (urlConn!=null) : "Unable to reach network - please check VPN status and network connection.";
+
             InputStream inputStream = urlConn.getInputStream();
             BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
             String line = in.readLine();
@@ -137,6 +155,9 @@ public abstract class UserDatabase {
                                + c_user);
 
             URLConnection urlConn = url.openConnection();
+
+            assert (urlConn!=null) : "Unable to reach network - please check VPN status and network connection.";
+
             InputStream inputStream = urlConn.getInputStream();
             BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
             String line = in.readLine();
@@ -159,6 +180,9 @@ public abstract class UserDatabase {
                     + c_user);
 
             URLConnection urlConn = url.openConnection();
+
+            assert (urlConn!=null) : "Unable to reach network - please check VPN status and network connection.";
+
             InputStream inputStream = urlConn.getInputStream();
             BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
             String line = in.readLine();

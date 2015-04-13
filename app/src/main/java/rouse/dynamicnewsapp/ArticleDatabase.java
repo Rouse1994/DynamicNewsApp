@@ -18,6 +18,9 @@ public abstract class ArticleDatabase {
             URL url = new URL("http://kc-sce-netrx5.umkc.edu:1214/AndroidServer/rest/news/article/?articleName="+name);
 
             URLConnection urlConn = url.openConnection();
+
+            assert (urlConn!=null) : "Unable to reach network - please check VPN status and network connection.";
+
             InputStream inputStream = urlConn.getInputStream();
             BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
             String line = in.readLine();
@@ -51,6 +54,9 @@ public abstract class ArticleDatabase {
             URL url = new URL("http://kc-sce-netrx5.umkc.edu:1214/AndroidServer/rest/news/"+category);
 
             URLConnection urlConn = url.openConnection();
+
+            assert (urlConn!=null) : "Unable to reach network - please check VPN status and network connection.";
+
             InputStream inputStream = urlConn.getInputStream();
             BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
             String line = in.readLine();

@@ -21,42 +21,67 @@ import android.widget.TextView;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.io.IOException;
+
 
 public class LoginActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
-    private class checkUser extends AsyncTask<String, Void, Boolean> {
+    private User current_user;
+
+    private class checkUser extends AsyncTask<String, Void, String> {
         @Override
-        protected Boolean doInBackground(String... userInfo) {
-            return UserDatabase.ValidLogIn(userInfo[0], userInfo[1]);
+        protected String doInBackground(String... userInfo) {
+            try {
+               current_user = new User(userInfo[0], userInfo[1]);
+                String outputMessage = UserDatabase.ValidLogIn(current_user);
+                if (outputMessage == "Valid"){
+                    return "Login successful.";
+                } else {
+                    return outputMessage;
+                }
+            } catch (IOException e){
+                return e.getMessage();
+            }
         }
         // onPostExecute displays the results of the AsyncTask.
         @Override
-        protected void onPostExecute(Boolean result) {
-            if (result) {
+        protected void onPostExecute(String result) {
+            if (result == "Login successful.") {
                 Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                i.putExtra("user", current_user.getUsername());
                 startActivity(i);
             } else{
                 TextView myAwesomeTextView = (TextView)findViewById(R.id.Invalid);
-                myAwesomeTextView.setText("Invalid log in, try again.");
+                myAwesomeTextView.setText(result);
             }
         }
     }
 
-    private class AddUser extends AsyncTask<String, Void, Boolean> {
+    private class AddUser extends AsyncTask<String, Void, String> {
         @Override
-        protected Boolean doInBackground(String... userInfo) {
-            return UserDatabase.makeUser(userInfo[0], userInfo[1]);
+        protected String doInBackground(String... userInfo) {
+            try {
+                current_user = new User(userInfo[0], userInfo[1], true);
+            } catch (IOException e){
+                return e.getMessage();
+            }
+            try{
+                return UserDatabase.makeUser(current_user);
+            } catch (IOException e){
+                return e.getMessage();
+            }
         }
         // onPostExecute displays the results of the AsyncTask.
         @Override
-        protected void onPostExecute(Boolean result) {
-            if (result) {
+        protected void onPostExecute(String result) {
+            if (result == "New user added. Logging in...") {
                 Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                i.putExtra("user", current_user.getUsername());
                 startActivity(i);
             } else{
                 TextView myAwesomeTextView = (TextView)findViewById(R.id.Invalid);
-                myAwesomeTextView.setText("Network error, try again.");
+                myAwesomeTextView.setText(result);
             }
         }
     }

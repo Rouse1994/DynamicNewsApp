@@ -1,6 +1,7 @@
 package rouse.dynamicnewsapp;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
@@ -26,6 +27,13 @@ import java.util.ArrayList;
 
 public class ArticleActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+
+    private String user;
+    String value = new String(); //Article fileName
+
+    //This is used as a flag for onSectionAttached.
+    private Boolean firstTime = true;
+
     private class FetchContent extends AsyncTask<String, Void, String> {
 
         protected String doInBackground(String... parms) {
@@ -46,6 +54,48 @@ public class ArticleActivity extends ActionBarActivity
         protected void onPostExecute(String articleText) {
             TextView myAwesomeTextView = (TextView)findViewById(R.id.textView);
             myAwesomeTextView.setText(articleText);
+            if (UserDatabase.inLater()){
+                itemLater.setIcon(R.drawable.later_sel);
+                Later = true;
+            }
+
+            if (UserDatabase.inSaved()){
+                itemSave.setIcon(R.drawable.star_sel);
+                Saved = true;
+            }
+        }
+    }
+
+    private class Save extends AsyncTask<String, Void, String> {
+
+        protected String doInBackground(String... parms) {
+            return UserDatabase.Save(user, value);
+        }
+
+        // Not sure what the three dots mean? See: http://stackoverflow.com/questions/3158730/java-3-dots-in-parameters?rq=1
+        protected void onProgressUpdate(Void... values) {
+
+        }
+
+        protected void onPostExecute(String articleText) {
+            //TextView myAwesomeTextView = (TextView)findViewById(R.id.textView);
+            //myAwesomeTextView.setText(articleText);
+        }
+    }
+
+    private class Later extends AsyncTask<String, Void, String> {
+
+        protected String doInBackground(String... parms) {
+            return UserDatabase.Later(user, value);
+        }
+
+        // Not sure what the three dots mean? See: http://stackoverflow.com/questions/3158730/java-3-dots-in-parameters?rq=1
+        protected void onProgressUpdate(Void... values) {
+        }
+
+        protected void onPostExecute(String articleText) {
+            //TextView myAwesomeTextView = (TextView)findViewById(R.id.textView);
+            //myAwesomeTextView.setText(articleText);
         }
     }
 
@@ -73,12 +123,12 @@ public class ArticleActivity extends ActionBarActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article);
-        String value = new String();
         String title = new String();
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             value = extras.getString("content");
             title = extras.getString("title");
+            user = extras.getString("user");
         }
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -138,6 +188,15 @@ public class ArticleActivity extends ActionBarActivity
                 mTitle = getString(R.string.Settings);
                 break;
         }
+        if (firstTime){
+            firstTime = false; //this has ran initially now
+        } else{
+            Intent i = new Intent(getApplicationContext(), MainActivity.class);
+            i.putExtra("user", user);
+            i.putExtra("mTitle", number);
+            startActivity(i);
+        }
+
     }
 
     public void restoreActionBar() {
@@ -198,6 +257,7 @@ public class ArticleActivity extends ActionBarActivity
                     itemLater.setIcon(R.drawable.later_sel);
                     Later = true;
                 }
+                new Later().execute(); //Add to 'later' on network
                 break;
             }
             case (SAVE): {
@@ -211,6 +271,7 @@ public class ArticleActivity extends ActionBarActivity
                     itemSave.setIcon(R.drawable.star_sel);
                     Saved = true;
                 }
+                new Save().execute(); //Add to 'saved' on network
                 break;
             }
             case (SHARE): {

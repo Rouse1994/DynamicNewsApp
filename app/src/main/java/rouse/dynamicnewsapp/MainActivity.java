@@ -26,14 +26,24 @@ import java.util.ArrayList;
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks, AdapterView.OnItemClickListener {
+
+    private String current_user;
+
     private class FetchArticles extends AsyncTask<String, Void, ArrayList<String>> {
 
         protected ArrayList<String> doInBackground(String... parms) {
 
             // parms[0] is first parm, etc.
-            current = new NewsCategory(mTitle.toString());
-            ArrayList<String> articles = current.getTitles();
-            return articles;
+            ArrayList<String> articles = new ArrayList<String>();
+
+            if (mTitle.toString().equals("Read Later")){
+               articles = UserDatabase.getLater(current_user);
+            } else if (mTitle.toString().equals("Saved")){
+               articles = UserDatabase.getSaved(current_user);
+            } else {
+                current = new NewsCategory(mTitle.toString());
+                articles = current.getTitles();
+            } return articles;
         }
 
         // Not sure what the three dots mean? See: http://stackoverflow.com/questions/3158730/java-3-dots-in-parameters?rq=1
@@ -58,6 +68,7 @@ public class MainActivity extends ActionBarActivity
         Intent i = new Intent(getApplicationContext(), ArticleActivity.class);
         i.putExtra("title", current.getArticleTitle(position));
         i.putExtra("content",current.getArticleFileName(position));
+        i.putExtra("user", current_user);
         startActivity(i);
     }
 
@@ -95,11 +106,18 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
-        
+
         new FetchArticles().execute();
 
         ListView listView = (ListView)this.findViewById(R.id.Items);
         listView.setOnItemClickListener(this);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            current_user = extras.getString("user");
+            onSectionAttached(extras.getInt("mTitle"));
+        }
+
     }
 
     @Override
@@ -147,6 +165,7 @@ public class MainActivity extends ActionBarActivity
                 mTitle = getString(R.string.Settings);
                 break;
         }
+        new FetchArticles().execute();
     }
 
     public void restoreActionBar() {

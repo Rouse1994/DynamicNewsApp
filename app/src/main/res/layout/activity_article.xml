@@ -9,12 +9,26 @@
     <FrameLayout android:id="@+id/container" android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:text="Username: "
+            android:textColor="#F2F2F2"
+            android:background="#000000"
+            android:ems="10"
+            android:padding="3px"
+            android:id="@+id/Share"
+            android:imeOptions="actionSend"
+            android:layout_gravity="right|top" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New Text"
             android:id="@+id/textView"
-            android:layout_gravity="left|top" />
+            android:layout_gravity="left|top"
+            android:text="Unable to load content." />
+
     </FrameLayout>
 
     <!-- android:layout_gravity="start" tells DrawerLayout to treat

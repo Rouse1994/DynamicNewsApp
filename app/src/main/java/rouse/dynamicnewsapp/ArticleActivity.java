@@ -11,13 +11,16 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -99,6 +102,23 @@ public class ArticleActivity extends ActionBarActivity
         }
     }
 
+    private class Share extends AsyncTask<String, Void, String> {
+
+        protected String doInBackground(String... parms) {
+
+            return UserDatabase.Share(parms[0], value);
+        }
+
+        // Not sure what the three dots mean? See: http://stackoverflow.com/questions/3158730/java-3-dots-in-parameters?rq=1
+        protected void onProgressUpdate(Void... values) {
+        }
+
+        protected void onPostExecute(String articleText) {
+            //TextView myAwesomeTextView = (TextView)findViewById(R.id.textView);
+            //myAwesomeTextView.setText(articleText);
+        }
+    }
+
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -114,6 +134,7 @@ public class ArticleActivity extends ActionBarActivity
 
     Boolean Saved = false;
     Boolean Later = false;
+    Boolean Shared = false;
 
     static final private int LATER = Menu.FIRST;
     static final private int SAVE = Menu.FIRST + 1;
@@ -125,11 +146,30 @@ public class ArticleActivity extends ActionBarActivity
         setContentView(R.layout.activity_article);
         String title = new String();
         Bundle extras = getIntent().getExtras();
+
+        TextView myAwesomeEditText = (TextView)findViewById(R.id.Share);
+        myAwesomeEditText.setVisibility(View.GONE);
+
         if (extras != null) {
             value = extras.getString("content");
             title = extras.getString("title");
             user = extras.getString("user");
         }
+
+        EditText editText = (EditText) findViewById(R.id.Share);
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                boolean handled = false;
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    TextView myAwesomeEditText2 = (TextView)findViewById(R.id.Share);
+                    new Share().execute(myAwesomeEditText2.getText().toString());
+                    myAwesomeEditText2.setVisibility(View.GONE);
+                    handled = true;
+                }
+                return handled;
+            }
+        });
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -187,8 +227,12 @@ public class ArticleActivity extends ActionBarActivity
             case 11:
                 mTitle = getString(R.string.Settings);
                 break;
+            case 12:
+                mTitle = getString(R.string.Friends);
+                break;
         }
-        if (firstTime){
+
+        if (firstTime) {
             firstTime = false; //this has ran initially now
         } else{
             Intent i = new Intent(getApplicationContext(), MainActivity.class);
@@ -275,6 +319,16 @@ public class ArticleActivity extends ActionBarActivity
                 break;
             }
             case (SHARE): {
+                if (Shared){
+                    TextView myAwesomeEditText = (TextView)findViewById(R.id.Share);
+                    myAwesomeEditText.setVisibility(View.GONE);
+                    Shared = false;
+                } else{
+                    TextView myAwesomeEditText = (TextView)findViewById(R.id.Share);
+                    myAwesomeEditText.setVisibility(View.VISIBLE);
+                    Shared = true;
+                }
+
                 break;
             }
         }

@@ -8,17 +8,21 @@ import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.Color;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -38,8 +42,12 @@ public class MainActivity extends ActionBarActivity
 
             if (mTitle.toString().equals("Read Later")){
                articles = UserDatabase.getLater(current_user);
-            } else if (mTitle.toString().equals("Saved")){
-               articles = UserDatabase.getSaved(current_user);
+            } else if (mTitle.toString().equals("Saved")) {
+                articles = UserDatabase.getSaved(current_user);
+            } else if (mTitle.toString().equals("Shared with Me")) {
+                articles = UserDatabase.getShared(current_user);
+            } else if (mTitle.toString().equals("Friends")){
+                articles = UserDatabase.getFriends(current_user);
             } else {
                 current = new NewsCategory(mTitle.toString());
                 articles = current.getTitles();
@@ -55,6 +63,22 @@ public class MainActivity extends ActionBarActivity
             ListView listView = (ListView)findViewById(R.id.Items);
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1 , articles);
             listView.setAdapter(adapter);
+        }
+    }
+
+    private class AddFriend extends AsyncTask<String, Void, String> {
+
+        protected String doInBackground(String... parms) {
+            return UserDatabase.AddFriend(current_user, parms[0]);
+        }
+
+        // Not sure what the three dots mean? See: http://stackoverflow.com/questions/3158730/java-3-dots-in-parameters?rq=1
+        protected void onProgressUpdate(Void... values) {
+        }
+
+        protected void onPostExecute(String articleText) {
+            //TextView myAwesomeTextView = (TextView)findViewById(R.id.textView);
+            //myAwesomeTextView.setText(articleText);
         }
     }
 
@@ -118,6 +142,22 @@ public class MainActivity extends ActionBarActivity
             onSectionAttached(extras.getInt("mTitle"));
         }
 
+        TextView myAwesomeEditText = (TextView)findViewById(R.id.addFriend);
+        myAwesomeEditText.setVisibility(View.GONE);
+
+        EditText editText = (EditText) findViewById(R.id.addFriend);
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                boolean handled = false;
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    TextView myAwesomeEditText2 = (TextView)findViewById(R.id.addFriend);
+                    new AddFriend().execute(myAwesomeEditText2.getText().toString());
+                    handled = true;
+                }
+                return handled;
+            }
+        });
     }
 
     @Override
@@ -164,6 +204,16 @@ public class MainActivity extends ActionBarActivity
             case 11:
                 mTitle = getString(R.string.Settings);
                 break;
+            case 12:
+                mTitle = getString(R.string.Friends);
+                break;
+        }
+
+        TextView myAwesomeEditText = (TextView)findViewById(R.id.addFriend);
+        if (mTitle.toString().equals("Friends")){
+            myAwesomeEditText.setVisibility(View.VISIBLE);
+        } else{
+            myAwesomeEditText.setVisibility(View.GONE);
         }
         new FetchArticles().execute();
     }

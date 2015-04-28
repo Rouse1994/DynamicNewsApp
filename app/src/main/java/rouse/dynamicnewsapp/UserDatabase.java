@@ -112,6 +112,62 @@ public abstract class UserDatabase {
 
     }
 
+    public static String Share(String username, String articleName){
+        try {
+            URL url = new URL("http://kc-sce-netrx5.umkc.edu:1214/AndroidServer/rest/news/share?username="
+                    + username + "&articleName=" + articleName);
+
+            URLConnection urlConn = url.openConnection();
+
+            assert (urlConn!=null) : "Unable to reach network - please check VPN status and network connection.";
+
+            InputStream inputStream = urlConn.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
+            String line = in.readLine();
+
+            String output = new String();
+
+            while (line != null) {
+                output += line;
+                line = in.readLine();
+            }
+
+            return output;
+
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+
+    }
+
+    public static String AddFriend(String username, String addUser){
+        try {
+            URL url = new URL("http://kc-sce-netrx5.umkc.edu:1214/AndroidServer/rest/news/AddFriend?username="
+                    + username + "&AddUsername=" + addUser);
+
+            URLConnection urlConn = url.openConnection();
+
+            assert (urlConn!=null) : "Unable to reach network - please check VPN status and network connection.";
+
+            InputStream inputStream = urlConn.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
+            String line = in.readLine();
+
+            String output = new String();
+
+            while (line != null) {
+                output += line;
+                line = in.readLine();
+            }
+
+            return output;
+
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+
+    }
+
     public static String Later(String username, String articleName){
         try {
             URL url = new URL("http://kc-sce-netrx5.umkc.edu:1214/AndroidServer/rest/news/later/modify?username="
@@ -173,6 +229,56 @@ public abstract class UserDatabase {
         return articles;
     }
 
+    public static ArrayList<String> getFriends(String c_user){
+        ArrayList<String> friends = new ArrayList<>();
+        try {
+            URL url = new URL("http://kc-sce-netrx5.umkc.edu:1214/AndroidServer/rest/news/friends?username="
+                    + c_user);
+
+            URLConnection urlConn = url.openConnection();
+
+            assert (urlConn!=null) : "Unable to reach network - please check VPN status and network connection.";
+
+            InputStream inputStream = urlConn.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
+            String line = in.readLine();
+
+            while (line != null) {
+                friends.add(line);
+                line = in.readLine();
+            }
+
+        } catch (Exception e) {
+            return null;
+        }
+        return friends;
+    }
+
+    public static ArrayList<String> getShared(String c_user){
+        ArrayList<String> articles = new ArrayList<>();
+        try {
+            URL url = new URL("http://kc-sce-netrx5.umkc.edu:1214/AndroidServer/rest/news/shared?username="
+                    + c_user);
+
+            URLConnection urlConn = url.openConnection();
+
+            assert (urlConn!=null) : "Unable to reach network - please check VPN status and network connection.";
+
+            InputStream inputStream = urlConn.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
+            String line = in.readLine();
+
+            while (line != null) {
+                articles.add(line);
+                line = in.readLine();
+            }
+
+        } catch (Exception e) {
+            return null;
+        }
+        return articles;
+    }
+
     public static ArrayList<String> getLater(String c_user){
         ArrayList<String> articles = new ArrayList<>();
         try {
@@ -196,5 +302,33 @@ public abstract class UserDatabase {
             return null;
         }
         return articles;
+    }
+
+    public static String submitFeedback(String message){
+        try {
+            URL url = new URL("http://kc-sce-netrx5.umkc.edu:1214/AndroidServer/rest/news/feedback?message="
+                    + message);
+
+            URLConnection urlConn = url.openConnection();
+
+            assert (urlConn!=null) : "Unable to reach network - please check VPN status and network connection.";
+
+            InputStream inputStream = urlConn.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
+            String line = in.readLine();
+
+            String output = new String();
+
+            while (line != null) {
+                output += line;
+                line = in.readLine();
+            }
+
+            return output;
+
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+
     }
 }
